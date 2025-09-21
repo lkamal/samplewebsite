@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
+      - name: Checkout private repository
+        uses: actions/checkout@v5
+        with:
+          repository: lkamal/samplewebsite-private
+          token: ${{ secrets.ACCESS_PRI_REPO }}
+          path: ./
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
@@ -24,12 +30,6 @@ jobs:
       - name: List S3 files
         run: |
           aws s3 ls s3://lkamal-website-temp1/
-      - name: Checkout private repository
-        uses: actions/checkout@v5
-        with:
-          repository: lkamal/samplewebsite-private
-          token: ${{ secrets.ACCESS_PRI_REPO }}
-          path: ./
       - name: Add files to S3 
         run: |
           aws s3 cp website/ s3://lkamal-website-temp1/ --recursive
