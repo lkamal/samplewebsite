@@ -13,11 +13,14 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
+        with:
+          ref: master
       - name: Checkout private repository
         uses: actions/checkout@v5
         with:
           repository: ${{ secrets.OTHER_REPO }}
           token: ${{ secrets.ACCESS_PRI_REPO }}
+          ref: master
           path: ./other-repo
       - name: Move files into one dir
         run: |
