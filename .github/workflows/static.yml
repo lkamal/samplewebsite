@@ -29,5 +29,5 @@ jobs:
           aws s3 cp website/ s3://lkamal-website-temp1/
       - name: List S3 files
         run: |
-          aws s3 ls s3://lkamal-website-temp1/
+          aws s3 ls s3://lkamal-website-temp1/ --recursive
       - run: echo "🍏 This job's status is ${{ job.status }}."
