@@ -21,7 +21,7 @@ jobs:
           path: ./samplewebsite-private
       - name: Move files into one dir
         run: |
-          mv ./samplewebsite-private/** .
+          mv ./samplewebsite-private/* ./website/
       - name: List files in the repository
         run: |
           tree ${{ github.workspace }}
