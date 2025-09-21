@@ -18,10 +18,13 @@ jobs:
         with:
           repository: lkamal/samplewebsite-private
           token: ${{ secrets.ACCESS_PRI_REPO }}
-          path: ./
+          path: ./samplewebsite-private
+      - name: Move files into one dir
+        run: |
+          mv ./samplewebsite-private/** .
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}
+          tree ${{ github.workspace }}
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
