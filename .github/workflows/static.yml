@@ -46,7 +46,7 @@ jobs:
           aws s3 ls s3://lkamal-website-temp1/
       - name: Invalidate CloudFront distribution
         run: | 
-          aws cloudfront create-invalidation --distribution-id E3434L9QORN334 --paths "/*"
+          aws cloudfront create-invalidation --distribution-id E3434L9QORN334 --paths "/*" --output-status DISABLED
       - run: rm -rf ./other-repo ./website
       - run: tree .
       - run: echo "🍏 This job's status is ${{ job.status }}."
