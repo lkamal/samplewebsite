@@ -16,7 +16,7 @@ jobs:
       - name: Checkout private repository
         uses: actions/checkout@v5
         with:
-          repository: lkamal/samplewebsite-private
+          repository: ${{ secrets.OTHER_REPO }}
           token: ${{ secrets.ACCESS_PRI_REPO }}
           path: ./samplewebsite-private
       - name: Move files into one dir
