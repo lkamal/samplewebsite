@@ -42,6 +42,7 @@ jobs:
       - name: Get the artifact
         uses: actions/download-artifact@v4
         with:
+          name: distribution
           path: ./dist
       - run: |
           tree .
@@ -55,7 +56,7 @@ jobs:
           aws s3 ls ${{ secrets.S3_BUCKET }}
       - name: Add files to S3 
         run: |
-          aws s3 cp ./dist/website/ ${{ secrets.S3_BUCKET }} --recursive
+          aws s3 cp ./dist/distribution/ ${{ secrets.S3_BUCKET }} --recursive
       - name: List S3 files
         run: |
           aws s3 ls ${{ secrets.S3_BUCKET }}
