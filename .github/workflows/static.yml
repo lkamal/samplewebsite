@@ -10,7 +10,7 @@ permissions:
   id-token: write
 
 jobs:
-  Deploy-Website:
+  Generate-Website:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -30,6 +30,18 @@ jobs:
       - name: List files in the repository
         run: |
           tree ${{ github.workspace }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./website
+          retention-days: 1
+  Deploy-Website:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the artifact
+        uses: actions/download-artifact@v5
+        with:
+          path: ./dist
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -37,16 +49,15 @@ jobs:
           aws-region: us-east-1
       - name: List S3 files
         run: |
-          aws s3 ls s3://lkamal-website-temp1/
+          aws s3 ls ${{ secrets.S3_BUCKET }}
       - name: Add files to S3 
         run: |
-          aws s3 cp website/ s3://lkamal-website-temp1/ --recursive
+          aws s3 cp ./dist/website/ ${{ secrets.S3_BUCKET }} --recursive
       - name: List S3 files
         run: |
-          aws s3 ls s3://lkamal-website-temp1/
+          aws s3 ls ${{ secrets.S3_BUCKET }}
       - name: Invalidate CloudFront distribution
         run: | 
-          aws cloudfront create-invalidation --distribution-id E3434L9QORN334 --paths "/*"  > /dev/null
-      - run: rm -rf ./other-repo ./website
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"  > /dev/null
       - run: tree .
       - run: echo "🍏 This job's status is ${{ job.status }}."
