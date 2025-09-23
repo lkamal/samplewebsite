@@ -42,6 +42,8 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           path: ./dist
+      - run: |
+          tree
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
