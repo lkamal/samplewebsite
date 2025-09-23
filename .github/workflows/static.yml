@@ -39,11 +39,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get the artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v4
         with:
           path: ./dist
       - run: |
-          tree
+          tree .
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
