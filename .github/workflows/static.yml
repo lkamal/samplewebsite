@@ -21,27 +21,7 @@ jobs:
   Generate-Website:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v5
-        with:
-          ref: master
-      - name: Checkout private repository
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ secrets.OTHER_REPO }}
-          token: ${{ secrets.ACCESS_PRI_REPO }}
-          ref: main
-          path: ./other-repo
-      - name: List all files are in private clone
-        run: | 
-          tree ./other-repo
-      - name: Move files into one dir
-        run: |
-          mv ./other-repo/* ./
-      - name: List all files are double clone
-        run: | 
-          tree 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: yarn1
+          cache: yarn
