@@ -31,6 +31,9 @@ jobs:
           cache: yarn
       - run: yarn
       - run: yarn build
+      - name: List all files after build
+        run: | 
+          tree .
       - uses: actions/upload-artifact@v4
         with:
           name: distribution
