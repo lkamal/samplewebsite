@@ -33,7 +33,7 @@ jobs:
       - run: yarn build
       - name: List all files after build
         run: | 
-          tree .
+          cat next.config.js
       - uses: actions/upload-artifact@v4
         with:
           name: distribution
