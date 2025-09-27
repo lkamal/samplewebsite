@@ -32,6 +32,9 @@ jobs:
           token: ${{ secrets.ACCESS_PRI_REPO }}
           ref: main
           path: ./other-repo
+      - name: List all files are in private clone
+        run: | 
+          tree ./other-repo
       - name: Move files into one dir
         run: |
           mv ./other-repo/* ./
