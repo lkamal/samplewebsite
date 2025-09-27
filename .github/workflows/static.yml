@@ -28,21 +28,28 @@ jobs:
       - name: Checkout private repository
         uses: actions/checkout@v5
         with:
-          repository: lkamal/tailwind-nextjs-starter-blog
+          repository: ${{ secrets.OTHER_REPO }}
           token: ${{ secrets.ACCESS_PRI_REPO }}
-          ref: master
+          ref: main
           path: ./other-repo
       - name: Move files into one dir
         run: |
           mv ./other-repo/* ./website/
-      - name: List files in the repository
-        run: |
-          tree ${{ github.workspace }}
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+      - run: yarn
+      - run: yarn build
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Calculate yarn cache size
+        run: du -sh ${{ steps.yarn-cache-dir-path.outputs.dir }}
+      - uses: actions/upload-artifact@v4
         with:
           name: distribution
-          path: ./website
+          path: ./out
           retention-days: 1
   Deploy-Website:
     runs-on: ubuntu-latest
