@@ -34,50 +34,13 @@ jobs:
           path: ./other-repo
       - name: Move files into one dir
         run: |
-          mv ./other-repo/* ./website/
+          mv ./other-repo/* ./
+      - name: List all files are double clone
+        run: | 
+          tree 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: yarn
       - run: yarn
       - run: yarn build
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Calculate yarn cache size
-        run: du -sh ${{ steps.yarn-cache-dir-path.outputs.dir }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: distribution
-          path: ./out
-          retention-days: 1
-  Deploy-Website:
-    runs-on: ubuntu-latest
-    needs: Generate-Website
-    steps:
-      - name: Get the artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: distribution
-          path: ./dist
-      - run: |
-          tree .
-      - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
-          aws-region: us-east-1
-      - name: List S3 files
-        run: |
-          aws s3 ls ${{ secrets.S3_BUCKET }}
-      - name: Add files to S3 
-        run: |
-          aws s3 cp ./dist/ ${{ secrets.S3_BUCKET }} --recursive
-      - name: List S3 files
-        run: |
-          aws s3 ls ${{ secrets.S3_BUCKET }}
-      - name: Invalidate CloudFront distribution
-        run: | 
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"  > /dev/null
-      - run: tree .
-      - run: echo "🍏 This job's status is ${{ job.status }}."
