@@ -29,15 +29,24 @@ jobs:
         with:
           node-version: '20'
           cache: yarn
+#      - name: Restore cache
+#        uses: actions/cache@v4
+#        with:
+#          path: .next/cache
+#          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+#          restore-keys: |
+#            ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
       - run: yarn
       - run: yarn build
-      - name: List all files after build
-        run: | 
-          cat next.config.js
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Calculate yarn cache size
+        run: du -sh ${{ steps.yarn-cache-dir-path.outputs.dir }}
       - uses: actions/upload-artifact@v4
         with:
           name: distribution
-          path: ./.next
+          path: ./out
           retention-days: 1
           if-no-files-found: error
   Deploy-Website:
