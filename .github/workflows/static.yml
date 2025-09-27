@@ -28,7 +28,7 @@ jobs:
       - name: Checkout private repository
         uses: actions/checkout@v5
         with:
-          repository: lkamal/samplewebsite-private
+          repository: lkamal/tailwind-nextjs-starter-blog
           token: ${{ secrets.ACCESS_PRI_REPO }}
           ref: master
           path: ./other-repo
