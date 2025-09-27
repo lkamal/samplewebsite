@@ -35,21 +35,14 @@ jobs:
       - name: Move files into one dir
         run: |
           mv ./other-repo/* ./website/
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: yarn
-      - run: yarn
-      - run: yarn build
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Calculate yarn cache size
-        run: du -sh ${{ steps.yarn-cache-dir-path.outputs.dir }}
-      - uses: actions/upload-artifact@v4
+      - name: List files in the repository
+        run: |
+          tree ${{ github.workspace }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: distribution
-          path: ./out
+          path: ./website
           retention-days: 1
   Deploy-Website:
     runs-on: ubuntu-latest
