@@ -1,13 +1,21 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀 
+name: Generate Site
+run-name: ${{ github.actor }} is generating Site 🚀 
 on: 
   push:
     branches:
       - master
-  workflow_dispatch:
+  workflow_dispatch: # Allows triggering the build manually
 
 permissions:
-  id-token: write
+  # This permission governs access to the repository's code and files.
+  contents: read 
+  # This permission is used for OpenID Connect (OIDC) authentication. id-token: write: Allows the workflow to generate a JSON Web Token (JWT) that can be used to authenticate with external cloud providers (like AWS, Azure, or GCP) or other services that support OIDC. This enables secure, passwordless authentication from GitHub Actions to external systems.
+  id-token: write 
+
+# Concurrency in GitHub Actions allows you to control the simultaneous execution of workflow runs or jobs.
+concurrency:
+  group: 'website'
+  cancel-in-progress: true 
 
 jobs:
   Generate-Website:
@@ -27,14 +35,21 @@ jobs:
       - name: Move files into one dir
         run: |
           mv ./other-repo/* ./website/
-      - name: List files in the repository
-        run: |
-          tree ${{ github.workspace }}
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+      - run: yarn
+      - run: yarn build
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Calculate yarn cache size
+        run: du -sh ${{ steps.yarn-cache-dir-path.outputs.dir }}
+      - uses: actions/upload-artifact@v4
         with:
           name: distribution
-          path: ./website
+          path: ./out
           retention-days: 1
   Deploy-Website:
     runs-on: ubuntu-latest
