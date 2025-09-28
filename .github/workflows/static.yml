@@ -30,4 +30,4 @@ jobs:
           node-version: '20'
           cache: yarn
       - run: yarn
-      - run: yarn next build --debug
+      - run: EXPORT=1 UNOPTIMIZED=1 yarn build
