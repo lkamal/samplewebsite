@@ -21,6 +21,9 @@ jobs:
         with:
           ref: master
           path: ./blog-repo
+      - name: List all blog files
+        run: | 
+          tree .
       - name: Checkout website repository
         uses: actions/checkout@v5
         with:
