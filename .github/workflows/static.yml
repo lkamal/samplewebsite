@@ -16,15 +16,22 @@ jobs:
   Generate-Website:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout private repository
+      - name: Checkout blog repository
+        uses: actions/checkout@v5
+        with:
+          ref: master
+          path: ./blog-repo
+      - name: Checkout website repository
         uses: actions/checkout@v5
         with:
           repository: ${{ secrets.OTHER_REPO }}
           token: ${{ secrets.ACCESS_PRI_REPO }}
           ref: main
-      - name: List all files are in private clone
+      - name: List all files
         run: | 
           tree .
+      - name: Copy blogs
+        run: mv ./blog-repo/blog ./data
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
