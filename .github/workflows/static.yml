@@ -29,7 +29,9 @@ jobs:
         uses: actions/checkout@v5
         with:
           ref: master
-          path: ./data
+          path: ./data-blog
+      - name: Copy blogs
+        run: mv ./data-blog/blog ./data/
       - name: List all files
         run: | 
           tree .
