@@ -32,6 +32,7 @@ jobs:
           path: ./data-blog
       - name: Copy blogs
         run: mv ./data-blog/blog ./data/
+      - run: rm -rf ./data-blog
       - name: List all files
         run: | 
           tree .
