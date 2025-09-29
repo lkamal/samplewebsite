@@ -30,9 +30,12 @@ jobs:
           repository: ${{ secrets.OTHER_REPO }}
           token: ${{ secrets.ACCESS_PRI_REPO }}
           ref: main
+          path: ./website-repo
       - name: List all files
         run: | 
           tree .
+      - name: Copy website
+        run: mv ./website-repo/* .
       - name: Copy blogs
         run: mv ./blog-repo/blog ./data
       - uses: actions/setup-node@v4
