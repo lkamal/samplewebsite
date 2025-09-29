@@ -16,11 +16,6 @@ jobs:
   Generate-Website:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout blog repository
-        uses: actions/checkout@v5
-        with:
-          ref: master
-          path: ./blog-repo
       - name: List all blog files
         run: | 
           tree .
@@ -30,52 +25,12 @@ jobs:
           repository: ${{ secrets.OTHER_REPO }}
           token: ${{ secrets.ACCESS_PRI_REPO }}
           ref: main
-          path: ./website-repo
+      - name: Checkout blog repository
+        uses: actions/checkout@v5
+        with:
+          ref: master
+          path: ./data
       - name: List all files
         run: | 
           tree .
-      - name: Copy website
-        run: mv ./website-repo/* .
-      - name: Copy blogs
-        run: mv ./blog-repo/blog ./data
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: yarn
-      - run: yarn
-      - run: EXPORT=1 UNOPTIMIZED=1 yarn build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: distribution
-          path: ./out
-          retention-days: 1
-  Deploy-Website:
-    runs-on: ubuntu-latest
-    needs: Generate-Website
-    steps:
-      - name: Get the artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: distribution
-          path: ./dist
-      - run: |
-          tree .
-      - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
-          aws-region: us-east-1
-      - name: List S3 files
-        run: |
-          aws s3 ls ${{ secrets.S3_BUCKET }}
-      - name: Add files to S3 
-        run: |
-          aws s3 cp ./dist/ ${{ secrets.S3_BUCKET }} --recursive
-      - name: List S3 files
-        run: |
-          aws s3 ls ${{ secrets.S3_BUCKET }}
-      - name: Invalidate CloudFront distribution
-        run: | 
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"  > /dev/null
-      - run: tree .
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+
